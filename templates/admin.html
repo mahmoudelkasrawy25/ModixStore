@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>MODIX | Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen p-6 font-sans">
+    <div class="max-w-6xl mx-auto">
+        <!-- الهيدر -->
+        <div class="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
+            <h1 class="text-3xl font-black text-red-600">لوحة التحكم ⚙️</h1>
+            <div class="flex gap-3">
+                <a href="{{ url_for('logout') }}" class="bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition">تسجيل خروج 🔒</a>
+                <a href="{{ url_for('index') }}" class="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">عرض المتجر 🏠</a>
+            </div>
+        </div>
+
+        <!-- إضافة قسم -->
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl mb-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">إضافة قسم جديد</h2>
+            <form action="{{ url_for('add_category') }}" method="POST" class="flex gap-4">
+                <input type="text" name="name" placeholder="اسم القسم (مثال: إضاءة، كماليات...)" required class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-600">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition">إضافة قسم</button>
+            </form>
+        </div>
+
+        <!-- إضافة منتج -->
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl mb-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">إضافة منتج جديد</h2>
+            <form action="{{ url_for('add_product') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">اسم المنتج:</label>
+                        <input type="text" name="name" placeholder="اسم المنتج" required class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">السعر:</label>
+                        <input type="text" name="price" placeholder="السعر (مثلاً: 500 ج.م)" required class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">موديل السيارة المناسب:</label>
+                        <input type="text" name="car_model" placeholder="موديل السيارة المناسب" required class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">القسم:</label>
+                        <select name="category_id" required class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-600">
+                            <option value="">اختر القسم</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">رفع صورة المنتج من الجهاز:</label>
+                    <input type="file" name="image" class="w-full bg-black border border-zinc-700 rounded-xl p-2 text-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">أو رابط صورة خارجي (URL):</label>
+                    <input type="text" name="image_url" placeholder="https://..." class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-red-600 text-sm">
+                </div>
+                
+                <!-- خيار التحكم في ظهور خانة كتابة الشكل للعميل -->
+                <div class="flex items-center gap-3 bg-black border border-zinc-800 p-4 rounded-xl">
+                    <input type="checkbox" id="has_variant" name="has_variant" value="1" class="w-5 h-5 accent-red-600 cursor-pointer">
+                    <label for="has_variant" class="text-sm font-bold text-zinc-300 cursor-pointer">تفعيل خانة كتابة الشكل/المقاس للعميل لهذا المنتج ✍️ (يظهر تيكست بوكس للعميل)</label>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition shadow-lg">حفظ وإضافة المنتج 🚀</button>
+            </form>
+        </div>
+
+        <!-- قائمة المنتجات الحالية -->
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl shadow-xl">
+            <h2 class="text-xl font-bold mb-4">المنتجات الحالية</h2>
+            <div class="space-y-3">
+                {% for p in products %}
+                <div class="flex justify-between items-center bg-black border border-zinc-800 p-4 rounded-xl">
+                    <div class="flex items-center gap-4">
+                        <img src="{% if p.image_url.startswith('http') %}{{ p.image_url }}{% else %}{{ url_for('static', filename=p.image_url) }}{% endif %}" class="w-12 h-12 object-cover rounded-lg">
+                        <div>
+                            <h4 class="font-bold text-white">{{ p.name }}</h4>
+                            <p class="text-xs text-zinc-400">{{ p.price }} | {{ p.car_model }} {% if p.has_variant %}| <span class="text-red-500 font-bold">بها خانة كتابة الشكل للعميل</span>{% endif %}</p>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('delete_product', id=p.id) }}" class="bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white px-3 py-1.5 rounded-lg text-sm font-bold transition">حذف 🗑️</a>
+                </div>
+                {% else %}
+                <p class="text-zinc-500 text-center py-4">لا توجد منتجات مضافة بعد.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- قائمة الأقسام الحالية (عشان لو حبيت تحذف قسم) -->
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl shadow-xl mt-8">
+            <h2 class="text-xl font-bold mb-4">الأقسام الحالية</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {% for cat in categories %}
+                <div class="flex justify-between items-center bg-black border border-zinc-800 p-3 rounded-xl">
+                    <span class="font-bold text-white">{{ cat.name }}</span>
+                    <a href="{{ url_for('delete_category', id=cat.id) }}" class="text-red-500 hover:text-red-400 text-sm font-bold">حذف 🗑️</a>
+                </div>
+                {% else %}
+                <p class="text-zinc-500 text-center col-span-3 py-2">لا توجد أقسام مضافة بعد.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

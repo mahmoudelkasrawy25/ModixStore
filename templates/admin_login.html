@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>MODIX | Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex items-center justify-center h-screen font-sans">
+    <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md shadow-2xl">
+        <h2 class="text-2xl font-black text-red-600 mb-6 text-center">تسجيل دخول الأدمن ⚙️</h2>
+        {% if error %}
+            <p class="text-red-500 text-sm mb-4 text-center">{{ error }}</p>
+        {% endif %}
+        <form method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs text-zinc-400 mb-1">كلمة مرور الأدمن</label>
+                <input type="password" name="password" required class="w-full bg-black border border-zinc-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-600">
+            </div>
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition">دخول 🚀</button>
+        </form>
+    </div>
+</body>
+</html>

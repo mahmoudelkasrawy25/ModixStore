@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODIX | Ultimate Car Accessories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Cairo', sans-serif; background-color: #ffffff; color: #111111; min-height: 100vh; overflow-x: hidden; }
+
+        header { border-bottom: 2px solid #fee2e2; background: rgba(255, 255, 255, 0.95); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(15px); }
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; }
+        .brand-logo { height: 50px; width: auto; object-fit: contain; }
+        .nav-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+        
+        .cart-btn {
+            background: #dc2626; color: #ffffff; border: 2px solid #dc2626;
+            padding: 0.6rem 1.2rem; border-radius: 0.75rem; cursor: pointer;
+            font-family: 'Cairo', sans-serif; font-weight: bold; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;
+        }
+        .cart-btn:hover { background: #b91c1c; }
+        .cart-badge { background: #ffffff; color: #dc2626; border-radius: 50%; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 900; }
+        .social-link { color: #111111; text-decoration: none; background: #fef2f2; border: 1px solid #fee2e2; padding: 0.6rem 1rem; border-radius: 0.75rem; font-size: 0.85rem; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 0.4rem; }
+        .social-link:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+        /* Cinematic Intro */
+        .cinematic-wrapper { position: relative; height: 300vh; background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%); }
+        .cinematic-sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .showroom-bg { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(220, 38, 38, 0.08) 0%, #ffffff 70%); z-index: 1; }
+        .car-stage { position: absolute; width: 90%; max-width: 1100px; transition: transform 0.1s linear, opacity 0.3s ease; z-index: 3; text-align: center; }
+        .car-stage img { width: 100%; max-height: 75vh; object-fit: contain; border-radius: 16px; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15)); }
+        .showroom-logo { position: absolute; opacity: 0; transform: scale(0.3); transition: transform 0.1s linear, opacity 0.3s ease; z-index: 4; text-align: center; }
+        .showroom-logo img { height: 130px; filter: drop-shadow(0 10px 25px rgba(220, 38, 38, 0.4)); }
+        .showroom-logo h1 { font-size: 3rem; font-weight: 900; color: #111111; margin-top: 1rem; }
+        .showroom-logo h1 span { color: #dc2626; }
+        .scroll-hint { position: absolute; bottom: 2rem; color: #dc2626; font-weight: bold; font-size: 1.1rem; animation: bounce 1.5s infinite; z-index: 10; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        /* Store Section */
+        .store-section { padding: 5rem 2rem; background: #fff8f8; border-top: 3px solid #dc2626; }
+        .hero-controls { max-width: 800px; margin: 0 auto 3rem auto; text-align: center; }
+        .hero-controls h2 { font-size: 2.8rem; font-weight: 900; margin-bottom: 1.5rem; color: #111111; }
+        .hero-controls h2 span { color: #dc2626; }
+        .search-form { display: flex; gap: 0.5rem; background: #ffffff; border: 2px solid #dc2626; padding: 0.4rem; border-radius: 0.85rem; box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1); margin-bottom: 2rem; }
+        .search-input { flex: 1; background: transparent; border: none; padding: 0.75rem 1rem; color: #111; font-size: 1rem; outline: none; font-family: 'Cairo', sans-serif; }
+        .search-btn { background: #dc2626; color: #fff; border: none; padding: 0 1.5rem; border-radius: 0.6rem; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif; }
+        .categories { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+        .cat-btn { padding: 0.6rem 1.4rem; border-radius: 0.75rem; font-size: 0.9rem; font-weight: 700; text-decoration: none; border: 2px solid #fee2e2; background: #ffffff; color: #374151; transition: 0.3s; }
+        .cat-btn.active, .cat-btn:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+        .main-grid { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 2.2rem; }
+        .card { background: #ffffff; border: 2px solid #fee2e2; border-radius: 1.25rem; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: 0.4s; }
+        .card:hover { border-color: #dc2626; transform: translateY(-8px); box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15); }
+        .card-img-wrap { position: relative; height: 16rem; background: #fff5f5; overflow: hidden; }
+        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+        .card:hover .card-img-wrap img { transform: scale(1.08); }
+        .card-badge { position: absolute; top: 1rem; right: 1rem; background: #dc2626; color: #fff; font-size: 0.75rem; padding: 0.3rem 0.8rem; border-radius: 0.5rem; font-weight: bold; }
+        .card-body { padding: 1.5rem; }
+        .car-tag { font-size: 0.75rem; color: #dc2626; font-weight: 700; background: rgba(220, 38, 38, 0.1); padding: 0.25rem 0.65rem; border-radius: 6px; display: inline-block; margin-bottom: 0.75rem; }
+        .card-title { font-size: 1.25rem; font-weight: bold; color: #111111; margin-bottom: 0.75rem; }
+        .card-price { font-size: 1.5rem; font-weight: 900; color: #111111; margin-top: 0.5rem; display: flex; align-items: baseline; gap: 4px; }
+        .card-price span { font-size: 0.85rem; color: #6b7280; font-weight: bold; }
+        .card-footer { padding: 0 1.5rem 1.5rem 1.5rem; }
+        .add-cart-btn { width: 100%; background: #dc2626; color: #fff; font-weight: bold; padding: 0.85rem; border-radius: 0.85rem; border: none; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 1rem; transition: 0.3s; }
+        .add-cart-btn:hover { background: #b91c1c; }
+
+        /* Cart Modal & Checkout Form */
+        .cart-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; display: none; justify-content: flex-end; }
+        .cart-modal.open { display: flex; }
+        .cart-content { width: 100%; max-width: 450px; background: #ffffff; border-left: 2px solid #fee2e2; height: 100%; display: flex; flex-direction: column; padding: 1.5rem; overflow-y: auto; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #fef2f2; padding-bottom: 1rem; margin-bottom: 1rem; }
+        .close-cart { background: none; border: none; color: #111; font-size: 1.5rem; cursor: pointer; }
+        .cart-items { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; background: #fff5f5; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #fee2e2; }
+        
+        /* Form Inputs inside Cart */
+        .checkout-form { background: #fdf2f2; border: 1px solid #fee2e2; padding: 1rem; border-radius: 0.75rem; margin-bottom: 1rem; }
+        .checkout-form h4 { font-size: 0.95rem; font-weight: bold; color: #dc2626; margin-bottom: 0.75rem; }
+        .form-group { margin-bottom: 0.6rem; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: bold; color: #374151; margin-bottom: 0.2rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; background: #fff; border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.85rem; font-family: 'Cairo', sans-serif; outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: #dc2626; }
+
+        .cart-summary-box { border-top: 2px solid #fef2f2; padding-top: 1rem; margin-top: auto; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; color: #4b5563; }
+        .summary-row.total { font-weight: bold; font-size: 1.1rem; color: #111; margin-top: 0.5rem; border-top: 1px dashed #cbd5e1; padding-top: 0.5rem; }
+        
+        .checkout-btn { width: 100%; background: #25d366; color: #fff; font-weight: bold; padding: 0.85rem; border-radius: 0.75rem; border: none; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: 0.2s; margin-top: 1rem; }
+        .checkout-btn:hover { background: #20ba5a; }
+
+        .empty { grid-column: 1 / -1; text-align: center; padding: 5rem 2rem; color: #6b7280; font-size: 1.2rem; background: #ffffff; border: 2px dashed #fee2e2; border-radius: 1.25rem; }
+        footer { border-top: 2px solid #fee2e2; padding: 3rem 0; text-align: center; font-size: 0.95rem; color: #6b7280; background: #ffffff; }
+        footer span { color: #111; font-weight: bold; }
+        .footer-contacts { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 1rem; color: #4b5563; flex-wrap: wrap; }
+        .footer-contacts a { color: #dc2626; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-content">
+            <a href="/">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="MODIX Logo" class="brand-logo">
+            </a>
+            <div class="nav-actions">
+                <a href="https://www.instagram.com/modix734?srtk=MW9jNjFudzczYXphaw==" target="_blank" class="social-link">📸 إنستجرام</a>
+                <a href="https://www.tiktok.com/@modix734?_r=1&_t=ZS-9AzM0PGDerd" target="_blank" class="social-link">🎵 تيك توك</a>
+                <button class="cart-btn" onclick="toggleCart()">
+                    🛒 السلة <span class="cart-badge" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cinematic Intro -->
+    <section class="cinematic-wrapper" id="cinematicSection">
+        <div class="cinematic-sticky">
+            <div class="showroom-bg"></div>
+            <div class="car-stage" id="carStage">
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80" alt="Red Porsche 911">
+            </div>
+            <div class="showroom-logo" id="showroomLogo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="MODIX Logo">
+                <h1>MODIX <span>STORE</span></h1>
+            </div>
+            <div class="scroll-hint">اسحب للأسفل لدخول المعرض 🔥</div>
+        </div>
+    </section>
+
+    <!-- Store Section -->
+    <section class="store-section">
+        <div class="container">
+            <div class="hero-controls">
+                <h2>ارتقِ بأداء عربيتك مع أقوى <span>الكماليات</span></h2>
+                <form action="/" method="GET" class="search-form">
+                    <input type="text" name="q" class="search-input" placeholder="ابحث عن منتج، ليد، إكسسوار..." value="{{ search_query }}">
+                    <button type="submit" class="search-btn">بحث 🔍</button>
+                </form>
+                <div class="categories">
+                    <a href="/" class="cat-btn {{ 'active' if not active_category else '' }}">الكل 🔥</a>
+                    {% for cat in categories %}
+                    <a href="/?category_id={{ cat.id }}" class="cat-btn {{ 'active' if active_category == cat.id else '' }}">{{ cat.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <main class="main-grid">
+                {% for product in products %}
+                <div class="card">
+                    <div>
+                        <div class="card-img-wrap">
+                            <img src="{% if product.image_url.startswith('http') %}{{ product.image_url }}{% else %}{{ url_for('static', filename=product.image_url) }}{% endif %}" alt="{{ product.name }}">
+                            <span class="card-badge">{{ product.category_rel.name }}</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="car-tag">🚗 مناسب لـ: {{ product.car_model }}</span>
+                            <h3 class="card-title">{{ product.name }}</h3>
+
+                            {% if product.has_variant %}
+                            <div style="margin-bottom: 0.75rem;">
+                                <label style="font-size: 0.75rem; color: #dc2626; display: block; margin-bottom: 0.25rem; font-weight: bold;">اكتب الشكل / المقاس المطلوب:</label>
+                                <input type="text" id="variant-{{ product.id }}" placeholder="مثال: أسود لامع، مقاس 18..." style="width: 100%; background: #fff5f5; border: 1px solid #fee2e2; color: #111; font-size: 0.85rem; border-radius: 0.5rem; padding: 0.5rem; outline: none;">
+                            </div>
+                            {% endif %}
+
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <label style="font-size: 0.75rem; color: #6b7280; font-weight: bold;">الكمية:</label>
+                                <input type="number" id="qty-{{ product.id }}" value="1" min="1" style="width: 60px; background: #fff5f5; border: 1px solid #fee2e2; text-align: center; border-radius: 0.5rem; padding: 0.3rem; font-size: 0.85rem;">
+                            </div>
+
+                            <div class="card-price">{{ product.price }} <span>ج.م</span></div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="add-cart-btn" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', {{ 'true' if product.has_variant else 'false' }})">
+                            🛒 أضف إلى السلة
+                        </button>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty">
+                    <p>⚡ لا توجد منتجات مطابقة للبحث أو القسم الحالي.</p>
+                </div>
+                {% endfor %}
+            </main>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>سلة المشتريات 🛒</h3>
+                <button class="close-cart" onclick="toggleCart()">&times;</button>
+            </div>
+            
+            <div class="cart-items" id="cartItemsContainer">
+                <p style="color: #6b7280; text-align: center; margin-top: 1rem;">السلة فارغة حالياً.</p>
+            </div>
+
+            <!-- بيانات العميل وعنوان الشحن -->
+            <div class="checkout-form">
+                <h4>📍 بيانات الاستلام والشحن</h4>
+                <div class="form-group">
+                    <label>الاسم الكامل:</label>
+                    <input type="text" id="custName" placeholder="اكتب اسمك هنا...">
+                </div>
+                <div class="form-group">
+                    <label>رقم الموبايل:</label>
+                    <input type="text" id="custPhone" placeholder="01xxxxxxxx0">
+                </div>
+                <div class="form-group">
+                    <label>المحافظة:</label>
+                    <select id="custGov" onchange="updateShipping()">
+                        <option value="85">القاهرة، الجيزة، الإسكندرية وباقي المحافظات (85 ج.م)</option>
+                        <option value="95">محافظات الصعيد (95 ج.م)</option>
+                        <option value="110">الساحل الشمالي والغردقة (110 ج.م)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العنوان بالتفصيل:</label>
+                    <textarea id="custAddress" rows="2" placeholder="الشارع، رقم العمارة، الدور، العلامة المميزة..."></textarea>
+                </div>
+            </div>
+
+            <div class="cart-summary-box">
+                <div class="summary-row">
+                    <span>إجمالي المنتجات:</span>
+                    <span id="subTotal">0 ج.م</span>
+                </div>
+                <div class="summary-row">
+                    <span>تكلفة الشحن:</span>
+                    <span id="shippingCost">85 ج.م</span>
+                </div>
+                <div class="summary-row total">
+                    <span>الإجمالي الكلي:</span>
+                    <span id="grandTotal">85 ج.م</span>
+                </div>
+                <button class="checkout-btn" onclick="checkoutWhatsApp()">
+                    💬 إتمام الطلب عبر واتساب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div>جميع الحقوق محفوظة © 2026 <span>MODIX Car Accessories</span></div>
+            <div class="footer-contacts">
+                <span>📞 تواصل واتساب: <a href="https://wa.me/201041313369" target="_blank">+20 104 131 3369</a></span>
+                <span>📸 إنستجرام: <a href="https://www.instagram.com/modix734?srtk=MW9jNjFudzczYXphaw==" target="_blank">@modix734</a></span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const wrapper = document.getElementById('cinematicSection');
+            const carStage = document.getElementById('carStage');
+            const logo = document.getElementById('showroomLogo');
+            const hint = document.querySelector('.scroll-hint');
+            let rect = wrapper.getBoundingClientRect();
+            let progress = -rect.top / (wrapper.offsetHeight - window.innerHeight);
+            if (progress >= 0 && progress <= 1) {
+                let carScale = 1 + progress * 2.5;
+                let carOpacity = 1 - progress * 1.5;
+                carStage.style.transform = `scale(${carScale})`;
+                carStage.style.opacity = Math.max(carOpacity, 0);
+                let logoProgress = (progress - 0.3) * 1.6;
+                if (logoProgress > 0) {
+                    let logoScale = 0.3 + logoProgress * 1.2;
+                    logo.style.opacity = Math.min(logoProgress, 1);
+                    logo.style.transform = `scale(${logoScale})`;
+                } else { logo.style.opacity = 0; }
+                hint.style.opacity = progress > 0.1 ? '0' : '1';
+            }
+        });
+
+        let cart = JSON.parse(localStorage.getItem('modix_cart')) || [];
+
+        function toggleCart() {
+            document.getElementById('cartModal').classList.toggle('open');
+            renderCart();
+        }
+
+        function addToCart(id, name, price, hasVariant) {
+            let qtyInput = document.getElementById('qty-' + id);
+            let qty = qtyInput ? parseInt(qtyInput.value) : 1;
+            let variant = 'بدون';
+            if (hasVariant) {
+                let variantInput = document.getElementById('variant-' + id);
+                variant = variantInput && variantInput.value.trim() !== '' ? variantInput.value.trim() : 'عام';
+            }
+            let existing = cart.find(item => item.id === id && item.variant === variant);
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push({ id, name, price: parseFloat(price.replace(/[^\d.]/g, '')) || 0, quantity: qty, variant, rawPrice: price });
+            }
+            saveAndRender();
+            alert('تم إضافة المنتج إلى السلة بنجاح! 🛒');
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveAndRender();
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('modix_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function updateShipping() {
+            renderCart();
+        }
+
+        function renderCart() {
+            let container = document.getElementById('cartItemsContainer');
+            let badge = document.getElementById('cartCount');
+            let subTotalBox = document.getElementById('subTotal');
+            let shippingBox = document.getElementById('shippingCost');
+            let grandTotalBox = document.getElementById('grandTotal');
+            
+            let totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.innerText = totalCount;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280; text-align: center; margin-top: 1rem;">السلة فارغة حالياً.</p>';
+                subTotalBox.innerText = '0 ج.م';
+                shippingBox.innerText = '0 ج.م';
+                grandTotalBox.innerText = '0 ج.م';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                html += `
+                    <div class="cart-item">
+                        <div>
+                            <h4 style="font-size: 0.85rem; color: #111;">${item.name}</h4>
+                            ${item.variant !== 'بدون' ? `<span style="font-size: 0.7rem; color: #dc2626; font-weight: bold;">الشكل/المقاس: ${item.variant}</span>` : ''}
+                            <span style="font-size: 0.7rem; color: #6b7280; font-weight: bold; display: block;">${item.rawPrice} × ${item.quantity}</span>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background: rgba(220,38,38,0.1); color: #dc2626; border: 1px solid #dc2626; padding: 0.2rem 0.4rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem;">حذف</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            
+            let govSelect = document.getElementById('custGov');
+            let shippingFee = govSelect ? parseInt(govSelect.value) : 85;
+            let grandTotal = subtotal + shippingFee;
+
+            subTotalBox.innerText = subtotal + ' ج.م';
+            shippingBox.innerText = shippingFee + ' ج.م';
+            grandTotalBox.innerText = grandTotal + ' ج.م';
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                alert('السلة فارغة!');
+                return;
+            }
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+            let govSelect = document.getElementById('custGov');
+            let govText = govSelect.options[govSelect.selectedIndex].text;
+            let address = document.getElementById('custAddress').value.trim();
+
+            if (!name || !phone || !address) {
+                alert('من فضلك املأ جميع بيانات الاستلام (الاسم، الموبايل، العنوان) قبل إتمام الطلب!');
+                return;
+            }
+
+            let shippingFee = parseInt(govSelect.value);
+            let msg = "🔥 *طلب جديد من متجر MODIX:*\n\n";
+            msg += "👤 *بيانات العميل:*\n";
+            msg += `• الاسم: ${name}\n`;
+            msg += `• الموبايل: ${phone}\n`;
+            msg += `• المحافظة: ${govText}\n`;
+            msg += `• العنوان: ${address}\n\n`;
+
+            msg += "🛒 *تفاصيل المنتجات:*\n";
+            let subtotal = 0;
+            cart.forEach(item => {
+                let sub = item.price * item.quantity;
+                subtotal += sub;
+                msg += `• *${item.name}*\n`;
+                if (item.variant !== 'بدون') {
+                  msg += `  - الشكل/المقاس: ${item.variant}\n`;
+                }
+                msg += `  - الكمية: ${item.quantity} | السعر: ${sub} ج.م\n`;
+            });
+
+            let grandTotal = subtotal + shippingFee;
+            msg += `\n📦 *ملخص الحساب:*\n`;
+            msg += `• إجمالي المنتجات: ${subtotal} ج.م\n`;
+            msg += `• مصاريف الشحن: ${shippingFee} ج.م\n`;
+            msg += `----------------------------------\n`;
+            msg += `💰 *الإجمالي الكلي: ${grandTotal} ج.م*`;
+            
+            let url = `https://wa.me/201041313369?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>
